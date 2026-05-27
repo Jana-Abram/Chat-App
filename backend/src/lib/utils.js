@@ -8,7 +8,7 @@ export const generateToken = (userId, res) => {
     }
 
     const token = jwt.sign({ userId }, JWT_SECRET, {
-        expressIn: "7d",
+        expiresIn: "7d",
     });
 
     res.cookie("jwt", token, {
