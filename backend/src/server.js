@@ -13,9 +13,6 @@ const __dirname = path.resolve();
 
 const PORT = ENV.PORT || 3000;
 
-console.log("CLIENT_URL =", ENV.CLIENT_URL);
-console.log("NODE_ENV =", ENV.NODE_ENV);
-
 app.use(express.json({ limit: "5mb" })); // req.body
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
@@ -23,12 +20,12 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// Frontend is deployed separately on Vercel
+// make ready for deployment
 if (ENV.NODE_ENV === "production") {
-  app.get("/", (_, res) => {
-    res.json({
-      message: "Chat API is running",
-    });
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (_, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
 
